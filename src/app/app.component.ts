@@ -79,7 +79,12 @@ export class AppComponent {
   constructor(private breakpointObserver: BreakpointObserver) {}
 
   toggleSidenav(drawer: any): void {
-    this.sidenavOpened = !this.sidenavOpened;
-    drawer.toggle();
+    if (drawer.opened) {
+      drawer.close();
+      this.sidenavOpened = false;
+    } else {
+      drawer.open();
+      this.sidenavOpened = true;
+    }
   }
 }
