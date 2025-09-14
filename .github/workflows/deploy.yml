@@ -29,9 +29,26 @@ jobs:
       - name: Build Angular app
         run: npm run build -- --base-href /brasil-dashboard/
         
+      - name: Verify build output (debug)
+        run: |
+          echo "=== Checking build output ==="
+          ls -la dist/
+          echo "=== Checking brasil-dashboard directory ==="
+          ls -la dist/brasil-dashboard/
+          echo "=== Checking browser subdirectory ==="
+          ls -la dist/brasil-dashboard/browser/ || echo "browser directory not found"
+          echo "=== Checking for index.html ==="
+          if [ -f "dist/brasil-dashboard/browser/index.html" ]; then
+            echo "✅ index.html found at dist/brasil-dashboard/browser/index.html"
+            head -5 dist/brasil-dashboard/browser/index.html
+          else
+            echo "❌ index.html NOT found in browser directory!"
+            find dist/ -name "*.html" -type f
+          fi
+        
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/brasil-dashboard
-          cname: false
+          publish_dir: ./dist/brasil-dashboard/browser
+          force_orphan: true
