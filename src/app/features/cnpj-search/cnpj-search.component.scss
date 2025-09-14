@@ -168,41 +168,31 @@
     }
   }
 
-  .overview-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
+  .simple-info {
+    padding: 1rem 0;
+  }
 
-    .stat-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-
-      mat-icon {
-        color: #003D7A;
-        font-size: 1.5rem;
-        width: 1.5rem;
-        height: 1.5rem;
-      }
-
-      div {
-        display: flex;
-        flex-direction: column;
-
-        .stat-label {
-          font-size: 0.875rem;
-          color: #666;
-          font-weight: 500;
-        }
-
-        .stat-value {
-          font-size: 1rem;
-          color: #333;
-          font-weight: 600;
-        }
-      }
+  .info-row {
+    display: flex;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    
+    &:last-child {
+      border-bottom: none;
     }
+  }
+
+  .label {
+    font-weight: 600;
+    color: #003D7A;
+    min-width: 150px;
+    flex-shrink: 0;
+  }
+
+  .value {
+    color: #333;
+    margin-left: 1rem;
+    flex: 1;
   }
 }
 
@@ -460,9 +450,8 @@
     align-items: stretch;
   }
 
-  .overview-card .overview-stats {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  .label {
+    min-width: 120px;
   }
 
   .details-card .tab-content {

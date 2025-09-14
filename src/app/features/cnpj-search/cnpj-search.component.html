@@ -105,37 +105,25 @@
       </mat-card-header>
       
       <mat-card-content>
-        <div class="overview-stats">
-          <div class="stat-item">
-            <mat-icon>business</mat-icon>
-            <div>
-              <span class="stat-label">Tipo</span>
-              <span class="stat-value">{{ cnpjData.descricao_matriz_filial }}</span>
-            </div>
+        <div class="simple-info">
+          <div class="info-row">
+            <span class="label">Tipo:</span>
+            <span class="value">{{ cnpjData?.descricao_matriz_filial || 'Não informado' }}</span>
           </div>
           
-          <div class="stat-item">
-            <mat-icon>calendar_today</mat-icon>
-            <div>
-              <span class="stat-label">Abertura</span>
-              <span class="stat-value">{{ formatDate(cnpjData.data_inicio_atividade) }}</span>
-            </div>
+          <div class="info-row">
+            <span class="label">Data de Abertura:</span>
+            <span class="value">{{ cnpjData?.data_inicio_atividade ? formatDate(cnpjData.data_inicio_atividade) : 'Não informado' }}</span>
           </div>
           
-          <div class="stat-item">
-            <mat-icon>monetization_on</mat-icon>
-            <div>
-              <span class="stat-label">Capital Social</span>
-              <span class="stat-value">{{ formatCurrency(cnpjData.capital_social) }}</span>
-            </div>
+          <div class="info-row">
+            <span class="label">Capital Social:</span>
+            <span class="value">{{ cnpjData?.capital_social !== undefined && cnpjData?.capital_social !== null ? formatCurrency(cnpjData.capital_social) : 'R$ 0,00' }}</span>
           </div>
           
-          <div class="stat-item">
-            <mat-icon>trending_up</mat-icon>
-            <div>
-              <span class="stat-label">Porte</span>
-              <span class="stat-value">{{ getPorteDescription(cnpjData.porte) }}</span>
-            </div>
+          <div class="info-row">
+            <span class="label">Porte:</span>
+            <span class="value">{{ cnpjData?.porte ? getPorteDescription(cnpjData.porte) : 'Não informado' }}</span>
           </div>
         </div>
       </mat-card-content>

@@ -141,7 +141,7 @@ export class CnpjSearchComponent implements OnInit {
   }
 
   formatCurrency(value: number): string {
-    if (!value) return 'R$ 0,00';
+    if (value === null || value === undefined || value === 0) return 'R$ 0,00';
     
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -150,7 +150,7 @@ export class CnpjSearchComponent implements OnInit {
   }
 
   getStatusClass(status: string): string {
-    if (!status) return '';
+    if (!status || typeof status !== 'string') return 'status-unknown';
     
     const statusLower = status.toLowerCase();
     if (statusLower.includes('ativa')) return 'status-active';
