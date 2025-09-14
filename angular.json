@@ -28,7 +28,8 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/404.html"
+              "src/404.html",
+              "src/.nojekyll"
             ],
             "styles": [
               "src/styles.scss"
@@ -92,7 +93,8 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/404.html"
+              "src/404.html",
+              "src/.nojekyll"
             ],
             "styles": [
               "src/styles.scss"
