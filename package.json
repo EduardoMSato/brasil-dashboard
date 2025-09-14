@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build --configuration production",
     "build:prod": "ng build --configuration production",
-    "build:gh-pages": "ng build --configuration production --base-href /brasil-dashboard/",
+    "build:gh-pages": "ng build --configuration production --base-href /brasil-dashboard/ && cp docs/index.html docs/404.html",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
