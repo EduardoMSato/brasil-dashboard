@@ -35,6 +35,7 @@ interface NavigationItem {
 })
 export class AppComponent {
   title = '🇧🇷 Brasil Dashboard';
+  sidenavOpened = true; // Track sidebar state
   
   navigationItems: NavigationItem[] = [
     {
@@ -76,4 +77,9 @@ export class AppComponent {
     );
 
   constructor(private breakpointObserver: BreakpointObserver) {}
+
+  toggleSidenav(drawer: any): void {
+    this.sidenavOpened = !this.sidenavOpened;
+    drawer.toggle();
+  }
 }

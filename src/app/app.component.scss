@@ -133,6 +133,31 @@
   overflow-y: auto;
 }
 
+// Toggle button styles
+.menu-toggle {
+  transition: transform 0.3s ease;
+  
+  &.sidebar-closed {
+    transform: rotate(0deg);
+  }
+  
+  &.sidebar-open {
+    transform: rotate(180deg);
+  }
+}
+
+// Desktop sidebar collapsed state
+@media (min-width: 769px) {
+  .sidenav-container .mat-drawer-side {
+    border-right: 1px solid #e0e0e0;
+    transition: width 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .sidenav-container .mat-drawer-content {
+    transition: margin-left 0.3s ease;
+  }
+}
+
 // Mobile Responsive Design
 @media (max-width: 768px) {
   .sidenav {

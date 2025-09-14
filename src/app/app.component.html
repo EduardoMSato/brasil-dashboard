@@ -2,7 +2,7 @@
   <mat-sidenav #drawer class="sidenav" fixedInViewport
       [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
       [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      [opened]="(isHandset$ | async) === false">
+      [opened]="(isHandset$ | async) ? false : sidenavOpened">
       
     <mat-toolbar class="sidenav-header">
       <span class="logo">🇧🇷 Brasil</span>
@@ -40,9 +40,13 @@
         type="button"
         aria-label="Toggle sidenav"
         mat-icon-button
-        (click)="drawer.toggle()"
-        *ngIf="isHandset$ | async">
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        class="menu-toggle"
+        [class.sidebar-open]="sidenavOpened && !(isHandset$ | async)"
+        [class.sidebar-closed]="!sidenavOpened && !(isHandset$ | async)"
+        (click)="toggleSidenav(drawer)">
+        <mat-icon aria-label="Side nav toggle icon">
+          {{ sidenavOpened ? 'menu_open' : 'menu' }}
+        </mat-icon>
       </button>
       
       <span class="toolbar-title">{{ title }}</span>
