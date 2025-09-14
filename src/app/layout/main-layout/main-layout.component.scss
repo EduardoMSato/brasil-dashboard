@@ -1,0 +1,44 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 280px;
+}
+
+.main-content {
+  min-height: calc(100vh - 64px);
+  background: #fafafa;
+  overflow-y: auto;
+}
+
+// Desktop sidebar collapsed state
+@media (min-width: 769px) {
+  .sidenav-container .mat-drawer-side {
+    border-right: 1px solid #e0e0e0;
+    transition: width 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .sidenav-container .mat-drawer-content {
+    transition: margin-left 0.3s ease;
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .sidenav {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+// High-contrast mode support
+@media (prefers-contrast: high) {
+  .sidenav app-sidebar ::ng-deep .sidenav-header {
+    background: #003D7A;
+  }
+  
+  .sidenav app-sidebar ::ng-deep mat-nav-list a[mat-list-item].active-route {
+    background: #003D7A;
+  }
+}

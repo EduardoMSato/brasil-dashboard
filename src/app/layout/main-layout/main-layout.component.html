@@ -1,0 +1,29 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav 
+    #drawer 
+    class="sidenav" 
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) ? false : sidenavOpened"
+    (openedChange)="sidenavOpened = $event">
+    
+    <app-sidebar 
+      [navigationItems]="navigationItems"
+      (navigationClick)="onNavigationClick(drawer)">
+    </app-sidebar>
+  </mat-sidenav>
+  
+  <mat-sidenav-content>
+    <app-header 
+      [title]="title"
+      [sidenavOpened]="sidenavOpened"
+      [isHandset]="!!(isHandset$ | async)"
+      (toggleSidenav)="toggleSidenav(drawer)">
+    </app-header>
+    
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,111 @@
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+  border-right: 1px solid #e0e0e0;
+}
+
+.sidenav-header {
+  background: linear-gradient(135deg, #003D7A 0%, #1565C0 100%);
+  color: white;
+  text-align: center;
+  height: 64px;
+  flex-shrink: 0;
+  
+  .logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  }
+}
+
+mat-nav-list {
+  padding-top: 0;
+  flex: 1;
+  
+  a[mat-list-item] {
+    margin: 0.25rem 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    min-height: 64px;
+    
+    &:hover {
+      background-color: rgba(0, 61, 122, 0.08);
+      transform: translateX(4px);
+    }
+    
+    &.active-route {
+      background: linear-gradient(135deg, #003D7A 0%, #1565C0 100%);
+      color: white;
+      
+      mat-icon {
+        color: white;
+      }
+      
+      [matListItemTitle] {
+        color: white;
+        font-weight: 600;
+      }
+      
+      [matListItemLine] {
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+    
+    mat-icon[matListItemIcon] {
+      color: #003D7A;
+      margin-right: 1rem;
+    }
+    
+    [matListItemTitle] {
+      color: #003D7A;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+    
+    [matListItemLine] {
+      color: #666;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+.sidenav-footer {
+  flex-shrink: 0;
+  padding: 1rem 0.5rem;
+  border-top: 1px solid #e0e0e0;
+  background: rgba(0, 61, 122, 0.02);
+  
+  mat-list-item {
+    border-radius: 6px;
+    
+    mat-icon[matListItemIcon] {
+      color: #666;
+      font-size: 1.2rem;
+    }
+    
+    [matListItemTitle] {
+      color: #666;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    [matListItemLine] {
+      color: #999;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  mat-nav-list a[mat-list-item] {
+    transition: none;
+    
+    &:hover {
+      transform: none;
+    }
+  }
+}
