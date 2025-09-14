@@ -86,7 +86,7 @@
           <mat-icon>location_city</mat-icon>
           <div>
             <strong>Bairro:</strong>
-            <span>{{ cepData.district || 'Não informado' }}</span>
+            <span>{{ cepData.neighborhood || 'Não informado' }}</span>
           </div>
         </div>
 
@@ -98,11 +98,11 @@
           </div>
         </div>
 
-        <div class="detail-item" *ngIf="cepData.lat && cepData.lng">
+        <div class="detail-item" *ngIf="cepData.location?.coordinates?.latitude && cepData.location?.coordinates?.longitude">
           <mat-icon>my_location</mat-icon>
           <div>
             <strong>Coordenadas:</strong>
-            <span>{{ cepData.lat }}, {{ cepData.lng }}</span>
+            <span>{{ cepData.location?.coordinates?.latitude }}, {{ cepData.location?.coordinates?.longitude }}</span>
           </div>
         </div>
       </div>
