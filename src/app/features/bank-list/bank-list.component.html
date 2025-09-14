@@ -1,0 +1,199 @@
+<div class="bank-list-container">
+  <div class="header-section">
+    <h1>🏦 Lista de Bancos Brasileiros</h1>
+    <p>Consulte todos os bancos registrados no Sistema Financeiro Nacional</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-section">
+    <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+    <p>Carregando lista de bancos brasileiros...</p>
+  </div>
+
+  <!-- Error State -->
+  <mat-card *ngIf="error" class="error-card">
+    <mat-card-content>
+      <div class="error-content">
+        <mat-icon class="error-icon">error</mat-icon>
+        <div>
+          <h3>Erro ao carregar bancos</h3>
+          <p>{{ error }}</p>
+          <button mat-raised-button color="primary" (click)="retry()">
+            <mat-icon>refresh</mat-icon>
+            Tentar Novamente
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !error">
+    <!-- Stats Card -->
+    <mat-card class="stats-card">
+      <mat-card-content>
+        <div class="stats-content">
+          <div class="stat-item">
+            <mat-icon>account_balance</mat-icon>
+            <div>
+              <span class="stat-number">{{ totalBanks }}</span>
+              <span class="stat-label">Bancos Registrados</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>filter_list</mat-icon>
+            <div>
+              <span class="stat-number">{{ filteredBanks.length }}</span>
+              <span class="stat-label">Resultados Filtrados</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>star</mat-icon>
+            <div>
+              <span class="stat-number">{{ mainBanks.length }}</span>
+              <span class="stat-label">Bancos Principais</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Main Banks Quick Access -->
+    <mat-card class="main-banks-card" *ngIf="mainBanks.length > 0">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>star</mat-icon>
+          Bancos Principais
+        </mat-card-title>
+        <mat-card-subtitle>Clique para filtrar por um banco específico</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="chips-container">
+          <mat-chip-listbox>
+            <mat-chip-option 
+              *ngFor="let bank of mainBanks" 
+              (click)="searchMainBank(bank.code)"
+              [value]="bank.code">
+              <strong>{{ bank.code }}</strong> - {{ bank.name }}
+            </mat-chip-option>
+          </mat-chip-listbox>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Search and Filter Card -->
+    <mat-card class="filter-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>search</mat-icon>
+          Buscar e Filtrar
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="filter-controls">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Buscar banco</mat-label>
+            <input matInput [formControl]="searchControl" placeholder="Nome, código ou nome completo...">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="sort-field">
+            <mat-label>Ordenar por</mat-label>
+            <mat-select [formControl]="sortByControl">
+              <mat-option value="name">Nome</mat-option>
+              <mat-option value="code">Código</mat-option>
+              <mat-option value="fullName">Nome Completo</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="sort-field">
+            <mat-label>Ordem</mat-label>
+            <mat-select [formControl]="sortOrderControl">
+              <mat-option value="asc">Crescente</mat-option>
+              <mat-option value="desc">Decrescente</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="action-buttons">
+            <button mat-button (click)="clearSearch()">
+              <mat-icon>clear</mat-icon>
+              Limpar
+            </button>
+            
+            <button mat-raised-button color="accent" (click)="exportToCSV()">
+              <mat-icon>download</mat-icon>
+              Exportar CSV
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Banks Table -->
+    <mat-card class="table-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>list</mat-icon>
+          Lista de Bancos
+        </mat-card-title>
+        <mat-card-subtitle>
+          Mostrando {{ filteredBanks.length }} de {{ totalBanks }} bancos
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="table-container">
+          <table mat-table [dataSource]="dataSource" matSort class="banks-table">
+            <!-- Code Column -->
+            <ng-container matColumnDef="code">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
+              <td mat-cell *matCellDef="let bank">
+                <div class="code-cell">
+                  <strong>{{ bank.code }}</strong>
+                  <mat-icon *ngIf="isMainBank(bank.code)" class="star-icon" title="Banco Principal">star</mat-icon>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
+              <td mat-cell *matCellDef="let bank">
+                <div class="name-cell">
+                  <strong>{{ bank.name }}</strong>
+                  <span class="bank-type">{{ getBankTypeDescription(bank.name) }}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Full Name Column -->
+            <ng-container matColumnDef="fullName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome Completo</th>
+              <td mat-cell *matCellDef="let bank">{{ bank.fullName }}</td>
+            </ng-container>
+
+            <!-- ISPB Column -->
+            <ng-container matColumnDef="ispb">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>ISPB</th>
+              <td mat-cell *matCellDef="let bank">
+                <code class="ispb-code">{{ bank.ispb }}</code>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+        <!-- Paginator -->
+        <mat-paginator 
+          [pageSizeOptions]="[10, 25, 50, 100]"
+          showFirstLastButtons
+          aria-label="Selecione a página dos bancos">
+        </mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

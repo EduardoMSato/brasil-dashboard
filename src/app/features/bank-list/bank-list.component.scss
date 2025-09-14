@@ -1,0 +1,315 @@
+.bank-list-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    color: #003D7A;
+    font-size: 2.2rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+  }
+
+  p {
+    color: #666;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+.loading-section {
+  text-align: center;
+  padding: 3rem;
+  
+  mat-progress-spinner {
+    margin: 0 auto 1rem;
+  }
+  
+  p {
+    color: #666;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+.stats-card,
+.main-banks-card,
+.filter-card,
+.table-card,
+.error-card {
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+
+  mat-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #003D7A;
+    font-size: 1.3rem;
+  }
+
+  mat-card-subtitle {
+    color: #666;
+    margin-top: 0.25rem;
+  }
+}
+
+// Stats Card
+.stats-card {
+  .stats-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      mat-icon {
+        color: #003D7A;
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+      }
+
+      div {
+        display: flex;
+        flex-direction: column;
+
+        .stat-number {
+          font-size: 1.8rem;
+          font-weight: 600;
+          color: #003D7A;
+          line-height: 1;
+        }
+
+        .stat-label {
+          font-size: 0.875rem;
+          color: #666;
+        }
+      }
+    }
+  }
+}
+
+// Main Banks Card
+.main-banks-card {
+  .chips-container {
+    mat-chip-listbox {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+
+      mat-chip-option {
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: #e3f2fd;
+        }
+
+        &.mdc-evolution-chip--selected {
+          background-color: #003D7A;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+// Filter Card
+.filter-card {
+  .filter-controls {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 1rem;
+    align-items: end;
+
+    .search-field {
+      min-width: 250px;
+    }
+
+    .sort-field {
+      min-width: 150px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      
+      .action-buttons {
+        justify-content: center;
+      }
+    }
+  }
+}
+
+// Table Card
+.table-card {
+  .table-container {
+    overflow-x: auto;
+    max-height: 600px;
+
+    .banks-table {
+      width: 100%;
+      
+      .mat-mdc-header-cell {
+        font-weight: 600;
+        color: #003D7A;
+      }
+
+      .mat-mdc-cell {
+        border-bottom: 1px solid #e0e0e0;
+        padding: 12px 8px;
+      }
+
+      .mat-mdc-row:hover {
+        background-color: #f5f5f5;
+      }
+
+      .code-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        strong {
+          color: #003D7A;
+          font-size: 1rem;
+        }
+
+        .star-icon {
+          color: #FFD700;
+          font-size: 1.2rem;
+          width: 1.2rem;
+          height: 1.2rem;
+        }
+      }
+
+      .name-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+
+        strong {
+          color: #333;
+          font-size: 0.95rem;
+        }
+
+        .bank-type {
+          font-size: 0.8rem;
+          color: #666;
+          font-style: italic;
+        }
+      }
+
+      .ispb-code {
+        background-color: #f5f5f5;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        color: #333;
+      }
+    }
+  }
+}
+
+// Error Card
+.error-card {
+  .error-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+    padding: 1rem;
+
+    .error-icon {
+      color: #e74c3c;
+      font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+    }
+
+    div {
+      flex: 1;
+
+      h3 {
+        color: #e74c3c;
+        margin: 0 0 0.5rem 0;
+      }
+
+      p {
+        color: #666;
+        margin: 0 0 1rem 0;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .bank-list-container {
+    padding: 15px;
+  }
+
+  .header-section {
+    h1 {
+      font-size: 1.8rem;
+    }
+  }
+
+  .stats-card .stats-content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .main-banks-card .chips-container mat-chip-listbox {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .table-card .table-container {
+    .banks-table {
+      font-size: 0.875rem;
+      
+      .mat-mdc-cell {
+        padding: 8px 4px;
+      }
+      
+      .name-cell strong {
+        font-size: 0.875rem;
+      }
+    }
+  }
+}
+
+// Custom scrollbar for table
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

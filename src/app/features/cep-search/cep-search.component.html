@@ -1,0 +1,144 @@
+<div class="cep-search-container">
+  <div class="header-section">
+    <h1>📍 Consulta CEP</h1>
+    <p>Busque endereços completos através do CEP usando a Brasil API</p>
+  </div>
+
+  <!-- Search Form -->
+  <mat-card class="search-card">
+    <mat-card-header>
+      <mat-card-title>Buscar CEP</mat-card-title>
+      <mat-card-subtitle>Digite o CEP no formato 00000-000</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="cepForm" (ngSubmit)="onSearch()" class="search-form">
+        <mat-form-field appearance="outline" class="cep-input">
+          <mat-label>CEP</mat-label>
+          <input 
+            matInput 
+            formControlName="cep"
+            (input)="onCepInput($event)"
+            placeholder="00000-000"
+            maxlength="9">
+          <mat-icon matSuffix>location_on</mat-icon>
+          
+          <mat-error *ngIf="cepForm.get('cep')?.hasError('required')">
+            CEP é obrigatório
+          </mat-error>
+          <mat-error *ngIf="cepForm.get('cep')?.hasError('pattern')">
+            CEP deve ter o formato 00000-000
+          </mat-error>
+        </mat-form-field>
+
+        <div class="button-group">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit"
+            [disabled]="isLoading || cepForm.invalid"
+            class="search-button">
+            <mat-icon *ngIf="isLoading">refresh</mat-icon>
+            <mat-icon *ngIf="!isLoading">search</mat-icon>
+            {{ isLoading ? 'Buscando...' : 'Buscar' }}
+          </button>
+          
+          <button 
+            mat-button 
+            type="button"
+            (click)="clearForm()"
+            [disabled]="isLoading">
+            <mat-icon>clear</mat-icon>
+            Limpar
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-section">
+    <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+    <p>Consultando CEP na Brasil API...</p>
+  </div>
+
+  <!-- Results -->
+  <mat-card *ngIf="cepData && !isLoading" class="result-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        Endereço Encontrado
+      </mat-card-title>
+      <mat-card-subtitle>CEP: {{ formatCep(cepData.cep) }}</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="address-details">
+        <div class="detail-item">
+          <mat-icon>home</mat-icon>
+          <div>
+            <strong>Logradouro:</strong>
+            <span>{{ cepData.street || 'Não informado' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <mat-icon>location_city</mat-icon>
+          <div>
+            <strong>Bairro:</strong>
+            <span>{{ cepData.district || 'Não informado' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <mat-icon>place</mat-icon>
+          <div>
+            <strong>Cidade:</strong>
+            <span>{{ cepData.city }} - {{ cepData.state }}</span>
+          </div>
+        </div>
+
+        <div class="detail-item" *ngIf="cepData.lat && cepData.lng">
+          <mat-icon>my_location</mat-icon>
+          <div>
+            <strong>Coordenadas:</strong>
+            <span>{{ cepData.lat }}, {{ cepData.lng }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Search History -->
+  <mat-card *ngIf="searchHistory.length > 0" class="history-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>history</mat-icon>
+        Histórico de Buscas
+      </mat-card-title>
+      <mat-card-subtitle>Últimas {{ searchHistory.length }} consultas realizadas</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="history-list">
+        <div 
+          *ngFor="let item of searchHistory" 
+          class="history-item"
+          (click)="searchFromHistory(item.cep)">
+          <div class="history-info">
+            <strong>{{ formatCep(item.cep) }}</strong>
+            <span>{{ item.street }}, {{ item.city }} - {{ item.state }}</span>
+          </div>
+          <mat-icon class="history-action">search</mat-icon>
+        </div>
+      </div>
+    </mat-card-content>
+    
+    <mat-card-actions>
+      <button mat-button (click)="clearHistory()">
+        <mat-icon>delete</mat-icon>
+        Limpar Histórico
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
