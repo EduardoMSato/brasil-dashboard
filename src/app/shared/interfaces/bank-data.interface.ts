@@ -1,7 +1,7 @@
 export interface IBankData {
   ispb: string;
   name: string;
-  code: number;
+  code: number | null;
   fullName: string;
 }
 

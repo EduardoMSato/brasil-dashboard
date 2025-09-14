@@ -133,12 +133,14 @@ export class BankListComponent implements OnInit {
 
   loadMainBanks(): void {
     this.mainBanks = this.banks.filter(bank => 
-      this.mainBankCodes.includes(bank.code)
+      bank.code != null && this.mainBankCodes.includes(bank.code)
     ).sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  searchMainBank(bankCode: number): void {
-    this.searchControl.setValue(bankCode.toString());
+  searchMainBank(bankCode: number | null): void {
+    if (bankCode != null) {
+      this.searchControl.setValue(bankCode.toString());
+    }
   }
 
   clearSearch(): void {
@@ -180,10 +182,10 @@ export class BankListComponent implements OnInit {
 
     banks.forEach(bank => {
       csvArray.push([
-        bank.code.toString(),
-        bank.name,
-        bank.fullName,
-        bank.ispb
+        bank.code?.toString() || 'N/A',
+        bank.name || 'N/A',
+        bank.fullName || 'N/A',
+        bank.ispb || 'N/A'
       ]);
     });
 
@@ -208,8 +210,8 @@ export class BankListComponent implements OnInit {
     return 'Banco Comercial';
   }
 
-  isMainBank(code: number): boolean {
-    return this.mainBankCodes.includes(code);
+  isMainBank(code: number | null): boolean {
+    return code != null && this.mainBankCodes.includes(code);
   }
 
   retry(): void {

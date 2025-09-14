@@ -25,9 +25,9 @@ export class BankService {
     if (filter.searchTerm) {
       const searchLower = filter.searchTerm.toLowerCase();
       filtered = filtered.filter(bank =>
-        bank.name.toLowerCase().includes(searchLower) ||
-        bank.fullName.toLowerCase().includes(searchLower) ||
-        bank.code.toString().includes(searchLower)
+        bank.name?.toLowerCase().includes(searchLower) ||
+        bank.fullName?.toLowerCase().includes(searchLower) ||
+        (bank.code != null && bank.code.toString().includes(searchLower))
       );
     }
 
@@ -38,16 +38,16 @@ export class BankService {
 
       switch (filter.sortBy) {
         case 'name':
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
+          aValue = a.name?.toLowerCase() || '';
+          bValue = b.name?.toLowerCase() || '';
           break;
         case 'fullName':
-          aValue = a.fullName.toLowerCase();
-          bValue = b.fullName.toLowerCase();
+          aValue = a.fullName?.toLowerCase() || '';
+          bValue = b.fullName?.toLowerCase() || '';
           break;
         case 'code':
-          aValue = a.code;
-          bValue = b.code;
+          aValue = a.code ?? 0;
+          bValue = b.code ?? 0;
           break;
         default:
           return 0;
