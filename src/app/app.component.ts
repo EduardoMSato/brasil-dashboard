@@ -1,64 +1,79 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import { CepService } from './core/services/cep.service';
-import { BankService } from './core/services/bank.service';
-import { ICepData } from './shared/interfaces/cep-data.interface';
-import { IBankData } from './shared/interfaces/bank-data.interface';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+
+interface NavigationItem {
+  name: string;
+  route: string;
+  icon: string;
+  description: string;
+}
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, MatCardModule, MatButtonModule],
+  imports: [
+    RouterOutlet, 
+    RouterModule,
+    CommonModule, 
+    MatToolbarModule,
+    MatButtonModule, 
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = '🇧🇷 Brasil Dashboard';
-  cepData: ICepData | null = null;
-  banks: IBankData[] = [];
-  isLoading = false;
-  error = '';
+  
+  navigationItems: NavigationItem[] = [
+    {
+      name: 'Dashboard',
+      route: '/dashboard',
+      icon: 'dashboard',
+      description: 'Visão geral do sistema'
+    },
+    {
+      name: 'Consulta CEP',
+      route: '/cep-search',
+      icon: 'place',
+      description: 'Buscar endereços por CEP'
+    },
+    {
+      name: 'Lista de Bancos',
+      route: '/bank-list',
+      icon: 'account_balance',
+      description: 'Explorar bancos brasileiros'
+    },
+    {
+      name: 'Consulta CNPJ',
+      route: '/cnpj-search',
+      icon: 'business',
+      description: 'Buscar dados de empresas'
+    },
+    {
+      name: 'Taxas Financeiras',
+      route: '/taxas-dashboard',
+      icon: 'trending_up',
+      description: 'Acompanhar cotações'
+    }
+  ];
 
-  constructor(
-    private cepService: CepService,
-    private bankService: BankService
-  ) {}
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+    .pipe(
+      map(result => result.matches),
+      shareReplay()
+    );
 
-  ngOnInit(): void {
-    this.testAPIs();
-  }
-
-  testAPIs(): void {
-    this.isLoading = true;
-    this.error = '';
-
-    // Test CEP API
-    this.cepService.getCepData('01001000').subscribe({
-      next: (data) => {
-        this.cepData = data;
-        console.log('✅ CEP API working:', data);
-      },
-      error: (error) => {
-        this.error = error.message;
-        console.error('❌ CEP API error:', error);
-      }
-    });
-
-    // Test Banks API
-    this.bankService.getBanks().subscribe({
-      next: (data) => {
-        this.banks = data.slice(0, 5); // Show first 5 banks
-        this.isLoading = false;
-        console.log('✅ Banks API working:', data.length, 'banks loaded');
-      },
-      error: (error) => {
-        this.error = error.message;
-        this.isLoading = false;
-        console.error('❌ Banks API error:', error);
-      }
-    });
-  }
+  constructor(private breakpointObserver: BreakpointObserver) {}
 }

@@ -1,0 +1,300 @@
+.taxas-dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    color: #003D7A;
+    font-size: 2.2rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+  }
+
+  p {
+    color: #666;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+// Loading State
+.loading-section {
+  text-align: center;
+  padding: 3rem;
+  
+  mat-progress-spinner {
+    margin: 0 auto 1rem;
+  }
+  
+  p {
+    color: #666;
+    font-size: 1rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  small {
+    color: #999;
+    font-style: italic;
+  }
+}
+
+// Error State
+.error-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+
+  .error-card {
+    max-width: 500px;
+    width: 100%;
+
+    .error-icon {
+      color: #E74C3C;
+      margin-right: 0.5rem;
+    }
+
+    mat-card-title {
+      display: flex;
+      align-items: center;
+      color: #E74C3C;
+    }
+  }
+}
+
+// Taxas Grid
+.taxas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  .taxa-card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    mat-card-header {
+      background: linear-gradient(135deg, #003D7A 0%, #1565C0 100%);
+      color: white;
+
+      .taxa-icon {
+        color: white;
+        margin-right: 0.5rem;
+      }
+
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        color: white;
+        font-size: 1.1rem;
+      }
+    }
+
+    mat-card-content {
+      padding: 1.5rem;
+
+      .taxa-value {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+
+        .value {
+          font-size: 2rem;
+          font-weight: 700;
+          color: #003D7A;
+        }
+
+        .unit {
+          font-size: 0.9rem;
+          color: #666;
+          font-weight: 500;
+        }
+      }
+
+      .taxa-info {
+        .info-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: #666;
+          font-size: 0.875rem;
+
+          mat-icon {
+            font-size: 1rem;
+            width: 1rem;
+            height: 1rem;
+          }
+        }
+      }
+    }
+
+    mat-card-actions {
+      padding: 0.5rem 1.5rem 1.5rem;
+    }
+  }
+}
+
+// Empty State
+.empty-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+
+  .empty-card {
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+
+    .empty-icon {
+      font-size: 4rem;
+      width: 4rem;
+      height: 4rem;
+      color: #ccc;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      color: #003D7A;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+// Quick Actions
+.quick-actions {
+  margin-bottom: 2rem;
+
+  .actions-card {
+    border-radius: 12px;
+
+    mat-card-header {
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        color: #003D7A;
+
+        mat-icon {
+          margin-right: 0.5rem;
+        }
+      }
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+      }
+    }
+  }
+}
+
+// System Info
+.system-info {
+  .info-card {
+    border-radius: 12px;
+
+    mat-card-header {
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        color: #003D7A;
+
+        mat-icon {
+          margin-right: 0.5rem;
+        }
+      }
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+
+        strong {
+          color: #003D7A;
+          font-size: 0.875rem;
+          font-weight: 600;
+        }
+
+        span {
+          color: #333;
+          font-size: 1rem;
+
+          &.status-operational {
+            color: #27AE60;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .taxas-dashboard-container {
+    padding: 15px;
+  }
+
+  .header-section h1 {
+    font-size: 1.8rem;
+  }
+
+  .taxas-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .quick-actions .actions-card .actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .system-info .info-card .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .taxas-dashboard-container {
+    padding: 10px;
+  }
+
+  .header-section h1 {
+    font-size: 1.6rem;
+  }
+
+  .taxa-card {
+    mat-card-content .taxa-value .value {
+      font-size: 1.5rem;
+    }
+  }
+}

@@ -1,0 +1,149 @@
+<div class="taxas-dashboard-container">
+  <div class="header-section">
+    <h1>💰 Dashboard de Taxas Financeiras</h1>
+    <p>Acompanhe as principais taxas e indicadores financeiros do Brasil</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-section">
+    <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+    <p>Carregando taxas financeiras...</p>
+    <small>Obtendo dados mais recentes do mercado</small>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-section">
+    <mat-card class="error-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="error-icon">error</mat-icon>
+          Erro ao Carregar Taxas
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ error }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="loadTaxas()">
+          <mat-icon>refresh</mat-icon>
+          Tentar Novamente
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Taxas Grid -->
+  <div *ngIf="taxas.length > 0 && !isLoading" class="taxas-grid">
+    <mat-card *ngFor="let taxa of taxas; trackBy: trackByTaxa" class="taxa-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="taxa-icon">trending_up</mat-icon>
+          {{ taxa.nome }}
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="taxa-value">
+          <span class="value">{{ formatTaxaValue(taxa.valor) }}</span>
+          <span class="unit" *ngIf="getTaxaUnit(taxa.nome)">{{ getTaxaUnit(taxa.nome) }}</span>
+        </div>
+        
+        <div class="taxa-info">
+          <div class="info-item">
+            <mat-icon>update</mat-icon>
+            <span>Última atualização: {{ lastUpdated | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+      
+      <mat-card-actions>
+        <button mat-button>
+          <mat-icon>info</mat-icon>
+          Detalhes
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="taxas.length === 0 && !isLoading && !error" class="empty-section">
+    <mat-card class="empty-card">
+      <mat-card-content>
+        <mat-icon class="empty-icon">info</mat-icon>
+        <h3>Nenhuma Taxa Disponível</h3>
+        <p>Não há taxas financeiras disponíveis no momento.</p>
+        <button mat-raised-button color="primary" (click)="loadTaxas()">
+          <mat-icon>refresh</mat-icon>
+          Recarregar
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions" *ngIf="!isLoading">
+    <mat-card class="actions-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>settings</mat-icon>
+          Ações Rápidas
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="actions-grid">
+          <button mat-stroked-button (click)="loadTaxas()" [disabled]="isLoading">
+            <mat-icon>refresh</mat-icon>
+            Atualizar Taxas
+          </button>
+          
+          <button mat-stroked-button (click)="exportTaxas()" [disabled]="taxas.length === 0">
+            <mat-icon>file_download</mat-icon>
+            Exportar Dados
+          </button>
+          
+          <button mat-stroked-button (click)="showHistory()" [disabled]="taxas.length === 0">
+            <mat-icon>history</mat-icon>
+            Histórico
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- System Info -->
+  <div class="system-info" *ngIf="taxas.length > 0">
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>info</mat-icon>
+          Informações do Sistema
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <strong>Total de Taxas:</strong>
+            <span>{{ taxas.length }}</span>
+          </div>
+          
+          <div class="info-item">
+            <strong>Fonte:</strong>
+            <span>Brasil API</span>
+          </div>
+          
+          <div class="info-item">
+            <strong>Última Atualização:</strong>
+            <span>{{ lastUpdated | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+          </div>
+          
+          <div class="info-item">
+            <strong>Status:</strong>
+            <span class="status-operational">Operacional</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

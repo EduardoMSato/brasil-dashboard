@@ -1,86 +1,65 @@
-<div class="dashboard-container">
-  <header class="header">
-    <h1>{{ title }}</h1>
-    <p>Dashboard de APIs Brasileiras para demonstração técnica</p>
-  </header>
-
-  <main class="content">
-    <div *ngIf="isLoading" class="loading-section">
-      <p>Testando conexão com APIs brasileiras...</p>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+      
+    <mat-toolbar class="sidenav-header">
+      <span class="logo">🇧🇷 Brasil</span>
+    </mat-toolbar>
+    
+    <mat-nav-list>
+      <a 
+        mat-list-item 
+        *ngFor="let item of navigationItems" 
+        [routerLink]="item.route"
+        routerLinkActive="active-route"
+        [routerLinkActiveOptions]="{exact: item.route === '/dashboard'}"
+        (click)="drawer.close()">
+        
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <div matListItemTitle>{{ item.name }}</div>
+        <div matListItemLine>{{ item.description }}</div>
+      </a>
+    </mat-nav-list>
+    
+    <div class="sidenav-footer">
+      <mat-list>
+        <mat-list-item>
+          <mat-icon matListItemIcon>info</mat-icon>
+          <div matListItemTitle>Versão 1.0</div>
+          <div matListItemLine>Angular 17+</div>
+        </mat-list-item>
+      </mat-list>
     </div>
-
-    <div *ngIf="error" class="error-section">
-      <h3>❌ Erro de Conexão</h3>
-      <p>{{ error }}</p>
-      <button mat-raised-button color="primary" (click)="testAPIs()">
-        Tentar Novamente
+  </mat-sidenav>
+  
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="main-toolbar">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-    </div>
-
-    <div *ngIf="!isLoading && !error" class="success-section">
-      <div class="api-grid">
-        <!-- CEP API Test -->
-        <mat-card class="api-card" *ngIf="cepData">
-          <mat-card-header>
-            <mat-card-title>📍 CEP API - Funcionando!</mat-card-title>
-            <mat-card-subtitle>Testado com CEP: 01001-000</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <p><strong>Endereço:</strong> {{ cepData.street }}</p>
-            <p><strong>Bairro:</strong> {{ cepData.district }}</p>
-            <p><strong>Cidade:</strong> {{ cepData.city }} - {{ cepData.state }}</p>
-            <p><strong>CEP:</strong> {{ cepData.cep }}</p>
-          </mat-card-content>
-        </mat-card>
-
-        <!-- Banks API Test -->
-        <mat-card class="api-card" *ngIf="banks.length > 0">
-          <mat-card-header>
-            <mat-card-title>🏦 Banks API - Funcionando!</mat-card-title>
-            <mat-card-subtitle>Carregados {{ banks.length }} bancos (preview)</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <div *ngFor="let bank of banks" class="bank-item">
-              <strong>{{ bank.name }}</strong> - Código: {{ bank.code }}
-            </div>
-          </mat-card-content>
-        </mat-card>
-
-        <!-- API Status -->
-        <mat-card class="api-card">
-          <mat-card-header>
-            <mat-card-title>✅ Status das APIs</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <p>✅ CEP v2 - Conectado</p>
-            <p>✅ Banks v1 - Conectado</p>
-            <p>⏳ CNPJ v1 - Pronto para teste</p>
-            <p>⏳ Taxas v1 - Pronto para teste</p>
-          </mat-card-content>
-        </mat-card>
-
-        <!-- Next Steps -->
-        <mat-card class="api-card">
-          <mat-card-header>
-            <mat-card-title>🚀 Próximos Passos</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <p>✅ Estrutura base criada</p>
-            <p>✅ 4 serviços APIs implementados</p>
-            <p>✅ TypeScript interfaces definidas</p>
-            <p>✅ Error handling configurado</p>
-            <p>⏳ Criar componentes das features</p>
-            <p>⏳ Implementar UI com Material Design</p>
-          </mat-card-content>
-          <mat-card-actions>
-            <button mat-raised-button color="accent" (click)="testAPIs()">
-              Testar APIs Novamente
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
-    </div>
-  </main>
-</div>
-
-<router-outlet />
+      
+      <span class="toolbar-title">{{ title }}</span>
+      
+      <span class="toolbar-spacer"></span>
+      
+      <button mat-icon-button>
+        <mat-icon>notifications</mat-icon>
+      </button>
+      
+      <button mat-icon-button>
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </mat-toolbar>
+    
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

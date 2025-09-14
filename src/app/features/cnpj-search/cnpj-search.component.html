@@ -1,0 +1,336 @@
+<div class="cnpj-search-container">
+  <div class="header-section">
+    <h1>🏢 Consulta CNPJ</h1>
+    <p>Consulte dados completos de empresas brasileiras usando a Brasil API</p>
+  </div>
+
+  <!-- Sample CNPJs -->
+  <mat-card class="samples-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>business</mat-icon>
+        Empresas para Teste
+      </mat-card-title>
+      <mat-card-subtitle>Clique para consultar dados de empresas conhecidas</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="chips-container">
+        <mat-chip-listbox>
+          <mat-chip-option 
+            *ngFor="let sample of sampleCnpjs" 
+            (click)="searchSample(sample.cnpj)"
+            [value]="sample.cnpj">
+            {{ sample.name }}
+          </mat-chip-option>
+        </mat-chip-listbox>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Search Form -->
+  <mat-card class="search-card">
+    <mat-card-header>
+      <mat-card-title>Buscar CNPJ</mat-card-title>
+      <mat-card-subtitle>Digite o CNPJ no formato 00.000.000/0000-00</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="cnpjForm" (ngSubmit)="onSearch()" class="search-form">
+        <mat-form-field appearance="outline" class="cnpj-input">
+          <mat-label>CNPJ</mat-label>
+          <input 
+            matInput 
+            formControlName="cnpj"
+            (input)="onCnpjInput($event)"
+            placeholder="00.000.000/0000-00"
+            maxlength="18">
+          <mat-icon matSuffix>business</mat-icon>
+          
+          <mat-error *ngIf="cnpjForm.get('cnpj')?.hasError('required')">
+            CNPJ é obrigatório
+          </mat-error>
+          <mat-error *ngIf="cnpjForm.get('cnpj')?.hasError('pattern')">
+            CNPJ deve ter o formato 00.000.000/0000-00
+          </mat-error>
+        </mat-form-field>
+
+        <div class="button-group">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit"
+            [disabled]="isLoading || cnpjForm.invalid"
+            class="search-button">
+            <mat-icon *ngIf="isLoading">refresh</mat-icon>
+            <mat-icon *ngIf="!isLoading">search</mat-icon>
+            {{ isLoading ? 'Consultando...' : 'Consultar' }}
+          </button>
+          
+          <button 
+            mat-button 
+            type="button"
+            (click)="clearForm()"
+            [disabled]="isLoading">
+            <mat-icon>clear</mat-icon>
+            Limpar
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-section">
+    <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+    <p>Consultando CNPJ na Receita Federal...</p>
+    <small>Este processo pode levar alguns segundos</small>
+  </div>
+
+  <!-- Results -->
+  <div *ngIf="cnpjData && !isLoading">
+    <!-- Company Overview -->
+    <mat-card class="overview-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon class="success-icon">check_circle</mat-icon>
+          {{ cnpjData.nome_fantasia || cnpjData.razao_social }}
+        </mat-card-title>
+        <mat-card-subtitle>
+          <span class="cnpj-display">CNPJ: {{ cnpjService.formatCnpj(cnpjData.cnpj) }}</span>
+          <span class="status-badge" [ngClass]="getStatusClass(cnpjData.situacao_cadastral)">
+            {{ cnpjData.situacao_cadastral }}
+          </span>
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="overview-stats">
+          <div class="stat-item">
+            <mat-icon>business</mat-icon>
+            <div>
+              <span class="stat-label">Tipo</span>
+              <span class="stat-value">{{ cnpjData.descricao_matriz_filial }}</span>
+            </div>
+          </div>
+          
+          <div class="stat-item">
+            <mat-icon>calendar_today</mat-icon>
+            <div>
+              <span class="stat-label">Abertura</span>
+              <span class="stat-value">{{ formatDate(cnpjData.data_inicio_atividade) }}</span>
+            </div>
+          </div>
+          
+          <div class="stat-item">
+            <mat-icon>monetization_on</mat-icon>
+            <div>
+              <span class="stat-label">Capital Social</span>
+              <span class="stat-value">{{ formatCurrency(cnpjData.capital_social) }}</span>
+            </div>
+          </div>
+          
+          <div class="stat-item">
+            <mat-icon>trending_up</mat-icon>
+            <div>
+              <span class="stat-label">Porte</span>
+              <span class="stat-value">{{ getPorteDescription(cnpjData.porte) }}</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Detailed Information Tabs -->
+    <mat-card class="details-card">
+      <mat-tab-group>
+        <!-- Company Info -->
+        <mat-tab label="Dados da Empresa">
+          <div class="tab-content">
+            <div class="info-grid">
+              <div class="info-item">
+                <strong>Razão Social:</strong>
+                <span>{{ cnpjData.razao_social }}</span>
+              </div>
+              
+              <div class="info-item">
+                <strong>Nome Fantasia:</strong>
+                <span>{{ cnpjData.nome_fantasia || 'Não informado' }}</span>
+              </div>
+              
+              <div class="info-item">
+                <strong>Atividade Principal:</strong>
+                <span>{{ cnpjData.cnae_fiscal_descricao }}</span>
+              </div>
+              
+              <div class="info-item">
+                <strong>Código CNAE:</strong>
+                <span>{{ cnpjData.cnae_fiscal }}</span>
+              </div>
+              
+              <div class="info-item">
+                <strong>Natureza Jurídica:</strong>
+                <span>{{ cnpjData.codigo_natureza_juridica }}</span>
+              </div>
+              
+              <div class="info-item">
+                <strong>Data de Abertura:</strong>
+                <span>{{ formatDate(cnpjData.data_inicio_atividade) }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Address Tab -->
+        <mat-tab label="Endereço">
+          <div class="tab-content">
+            <div class="address-section">
+              <div class="address-item">
+                <mat-icon>home</mat-icon>
+                <div>
+                  <strong>{{ cnpjData.descricao_tipo_de_logradouro }} {{ cnpjData.logradouro }}</strong>
+                  <span *ngIf="cnpjData.numero">, {{ cnpjData.numero }}</span>
+                  <span *ngIf="cnpjData.complemento"> - {{ cnpjData.complemento }}</span>
+                </div>
+              </div>
+              
+              <div class="address-item">
+                <mat-icon>location_city</mat-icon>
+                <div>
+                  <strong>{{ cnpjData.bairro }}</strong>
+                  <span>{{ cnpjData.municipio }} - {{ cnpjData.uf }}</span>
+                </div>
+              </div>
+              
+              <div class="address-item">
+                <mat-icon>place</mat-icon>
+                <div>
+                  <strong>CEP:</strong>
+                  <span>{{ cnpjData.cep }}</span>
+                </div>
+              </div>
+              
+              <div class="address-item" *ngIf="cnpjData.ddd_telefone_1">
+                <mat-icon>phone</mat-icon>
+                <div>
+                  <strong>Telefone:</strong>
+                  <span>{{ cnpjData.ddd_telefone_1 }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Status Tab -->
+        <mat-tab label="Situação">
+          <div class="tab-content">
+            <div class="status-section">
+              <div class="status-item">
+                <div class="status-indicator" [ngClass]="getStatusClass(cnpjData.situacao_cadastral)"></div>
+                <div>
+                  <strong>Situação Cadastral:</strong>
+                  <span>{{ cnpjData.situacao_cadastral }}</span>
+                  <small>{{ formatDate(cnpjData.data_situacao_cadastral) }}</small>
+                </div>
+              </div>
+              
+              <div class="status-item" *ngIf="cnpjData.motivo_situacao_cadastral">
+                <mat-icon>info</mat-icon>
+                <div>
+                  <strong>Motivo:</strong>
+                  <span>{{ cnpjData.motivo_situacao_cadastral }}</span>
+                </div>
+              </div>
+              
+              <div class="tax-info">
+                <h3>Informações Tributárias</h3>
+                
+                <div class="tax-item">
+                  <mat-icon [style.color]="cnpjData.opcao_pelo_simples ? '#27AE60' : '#E74C3C'">
+                    {{ cnpjData.opcao_pelo_simples ? 'check_circle' : 'cancel' }}
+                  </mat-icon>
+                  <span>{{ cnpjData.opcao_pelo_simples ? 'Optante pelo Simples Nacional' : 'Não optante pelo Simples Nacional' }}</span>
+                </div>
+                
+                <div class="tax-item">
+                  <mat-icon [style.color]="cnpjData.opcao_pelo_mei ? '#27AE60' : '#E74C3C'">
+                    {{ cnpjData.opcao_pelo_mei ? 'check_circle' : 'cancel' }}
+                  </mat-icon>
+                  <span>{{ cnpjData.opcao_pelo_mei ? 'Optante pelo MEI' : 'Não optante pelo MEI' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Partners Tab -->
+        <mat-tab label="Sócios" *ngIf="cnpjData.qsa && cnpjData.qsa.length > 0">
+          <div class="tab-content">
+            <div class="partners-section">
+              <mat-expansion-panel *ngFor="let socio of cnpjData.qsa" class="partner-panel">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>{{ socio.nome_socio }}</mat-panel-title>
+                  <mat-panel-description>{{ socio.percentual_capital_social }}% do capital</mat-panel-description>
+                </mat-expansion-panel-header>
+                
+                <div class="partner-details">
+                  <div class="partner-item">
+                    <strong>CPF/CNPJ:</strong>
+                    <span>{{ socio.cnpj_cpf_do_socio }}</span>
+                  </div>
+                  
+                  <div class="partner-item">
+                    <strong>Participação:</strong>
+                    <span>{{ socio.percentual_capital_social }}%</span>
+                  </div>
+                  
+                  <div class="partner-item">
+                    <strong>Data de Entrada:</strong>
+                    <span>{{ formatDate(socio.data_entrada_sociedade) }}</span>
+                  </div>
+                  
+                  <div class="partner-item" *ngIf="socio.nome_representante_legal">
+                    <strong>Representante Legal:</strong>
+                    <span>{{ socio.nome_representante_legal }}</span>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </div>
+
+  <!-- Search History -->
+  <mat-card *ngIf="searchHistory.length > 0" class="history-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>history</mat-icon>
+        Histórico de Consultas
+      </mat-card-title>
+      <mat-card-subtitle>Últimas {{ searchHistory.length }} consultas realizadas</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="history-list">
+        <div 
+          *ngFor="let cnpj of searchHistory" 
+          class="history-item"
+          (click)="searchFromHistory(cnpj)">
+          <div class="history-info">
+            <strong>{{ cnpjService.formatCnpj(cnpj) }}</strong>
+          </div>
+          <mat-icon class="history-action">search</mat-icon>
+        </div>
+      </div>
+    </mat-card-content>
+    
+    <mat-card-actions>
+      <button mat-button (click)="clearHistory()">
+        <mat-icon>delete</mat-icon>
+        Limpar Histórico
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
