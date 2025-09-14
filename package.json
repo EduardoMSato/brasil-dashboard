@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build --configuration production",
     "build:prod": "ng build --configuration production",
-    "build:gh-pages": "ng build --configuration production --base-href /brasil-dashboard/ && cp docs/index.html docs/404.html",
+    "build:gh-pages": "ng build --configuration production --base-href /brasil-dashboard/",
+    "copy-404": "node -e \"require('fs').copyFileSync('docs/index.html', 'docs/404.html')\"",
+    "build:gh-pages-full": "npm run build:gh-pages && npm run copy-404",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
